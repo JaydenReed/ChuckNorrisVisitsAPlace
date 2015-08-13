@@ -45,7 +45,9 @@ var chuckNorris = document.createElement("img");
 chuckNorris.src = "hero.png";
 
 var player = new Player();
+var enemy = new Enemy();
 var keyboard = new Keyboard();
+var bullet = new Bullet()
 
 function run()
 {
@@ -53,6 +55,9 @@ function run()
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	
 	var deltaTime = getDeltaTime();
+	
+	enemy.update(deltaTime);
+	enemy.draw();
 	
 	player.update(deltaTime);
 	player.draw();
@@ -71,7 +76,15 @@ function run()
 	context.fillStyle = "#f00";
 	context.font="14px Arial";
 	context.fillText("FPS: " + fps, 5, 20, 100);
+	
+	if(keyboard.isKeyDown(keyboard.KEY_SHIFT) == true)
+	{
+		bullet.playerShoot();
+	}
+	
+	bullet.update();
 }
+
 
 
 //-------------------- Don't modify anything below here
