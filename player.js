@@ -14,15 +14,15 @@ var ANIM_MAX = 9;
 
 var Player = function() {
 	this.sprite = new Sprite("ChuckNorris.png");
-	this.sprite.buildAnimation(12, 8, 165, 126, 0.5, [0, 1, 2, 3, 4, 5, 6, 7]);  									// IDLE_LEFT
-	this.sprite.buildAnimation(12, 8, 165, 126, 0.5, [8, 9, 10, 11, 12]);											// JUMP_LEFT
-	this.sprite.buildAnimation(12, 8, 165, 126, 0.5, [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]);  	// WALK_LEFT
-	this.sprite.buildAnimation(12, 8, 165, 126, 0.5, [27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40]);  	// SHOOT_LEFT
-	this.sprite.buildAnimation(12, 8, 165, 126, 0.5, [41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51]);  				// CLIMB
-	this.sprite.buildAnimation(12, 8, 165, 126, 0.5, [52, 53, 54, 55, 56, 57, 58, 59]);  							// IDLE_RIGHT
-	this.sprite.buildAnimation(12, 8, 165, 126, 0.5, [60, 61, 62, 63, 64]);  										// JUMP_RIGHT
-	this.sprite.buildAnimation(12, 8, 165, 126, 0.5, [65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78]);  	// WALK_RIGHT
-	this.sprite.buildAnimation(12, 8, 165, 126, 0.5, [79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92]);  	// SHOOT_RIGHT
+	this.sprite.buildAnimation(12, 8, 165, 126, 0.1, [0, 1, 2, 3, 4, 5, 6, 7]);  									// IDLE_LEFT
+	this.sprite.buildAnimation(12, 8, 165, 126, 0.04, [8, 9, 10, 11, 12]);											// JUMP_LEFT
+	this.sprite.buildAnimation(12, 8, 165, 126, 0.04, [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]);  	// WALK_LEFT
+	this.sprite.buildAnimation(12, 8, 165, 126, 0.04, [27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40]);  	// SHOOT_LEFT
+	this.sprite.buildAnimation(12, 8, 165, 126, 0.04, [41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51]);  				// CLIMB
+	this.sprite.buildAnimation(12, 8, 165, 126, 0.1, [52, 53, 54, 55, 56, 57, 58, 59]);  							// IDLE_RIGHT
+	this.sprite.buildAnimation(12, 8, 165, 126, 0.04, [60, 61, 62, 63, 64]);  										// JUMP_RIGHT
+	this.sprite.buildAnimation(12, 8, 165, 126, 0.04, [65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78]);  	// WALK_RIGHT
+	this.sprite.buildAnimation(12, 8, 165, 126, 0.04, [79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92]);  	// SHOOT_RIGHT
 	
 	for(var i=0; i<ANIM_MAX; i++)
 	{

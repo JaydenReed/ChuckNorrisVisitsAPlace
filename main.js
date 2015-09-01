@@ -63,7 +63,6 @@ var chuckNorris = document.createElement("img");
 chuckNorris.src = "hero.png";
 
 var player = new Player();
-var enemy = new Enemy();
 var keyboard = new Keyboard();
 var bullet = new Bullet()
 
@@ -167,9 +166,6 @@ function run()
 	drawMap();
 	
 	var deltaTime = getDeltaTime();
-	
-	enemy.update(deltaTime);
-	enemy.draw();
 	
 	player.update(deltaTime);
 	player.draw();
