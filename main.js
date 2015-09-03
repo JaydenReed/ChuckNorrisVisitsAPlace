@@ -66,6 +66,14 @@ var player = new Player();
 var keyboard = new Keyboard();
 var bullet = new Bullet()
 
+var playerHealthTimer = 2;
+var playerHealth = 8
+
+if(playerHealthTimer > 0)
+{
+	if( )
+}
+
 // Load the image to use for the level tiles
 var tileset = document.createElement("img");
 tileset.src = "tileset.png";
