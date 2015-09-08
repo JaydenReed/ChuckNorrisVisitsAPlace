@@ -82,6 +82,10 @@ Player.prototype.update = function(deltaTime)
 	{
 		jump = true;
 	}
+	if(keyboard.isKeyDown(keyboard.KEY_A) == true && playerHealth > 0)
+	{
+		playerHealth -= 1;
+	}
 	
 	var wasleft = this.velocity.x < 0;
 	var wasright = this.velocity.x > 0;

@@ -64,15 +64,11 @@ chuckNorris.src = "hero.png";
 
 var player = new Player();
 var keyboard = new Keyboard();
-var bullet = new Bullet()
+var bullet = new Bullet();
+// var playerHealthBar = new PlayerHealth();
 
-var playerHealthTimer = 2;
-var playerHealth = 8
-
-if(playerHealthTimer > 0)
-{
-	if( )
-}
+// var playerHealthTimer = 2;
+var playerHealth = 8;
 
 // Load the image to use for the level tiles
 var tileset = document.createElement("img");
@@ -178,6 +174,9 @@ function run()
 	player.update(deltaTime);
 	player.draw();
 	
+	// playerHealthBar.update(deltaTime);
+	// playerHealthBar.draw();
+	
 	// update the frame counter 
 	fpsTime += deltaTime;
 	fpsCount++;
@@ -199,6 +198,52 @@ function run()
 	}
 	
 	bullet.update();
+	
+	var playerHealthBar = {
+		image: document.createElement("img"),
+		x: 636,
+		y: 26,
+		width: 255,
+		height: 24,
+	};
+	
+	if(playerHealth == 8)
+	{
+		playerHealthBar.image.src = "HealthBar8.fw.png";
+	}
+	if(playerHealth == 7)
+	{
+		playerHealthBar.image.src = "HealthBar7.fw.png";
+	}
+	if(playerHealth == 6)
+	{
+		playerHealthBar.image.src = "HealthBar6.fw.png";
+	}
+	if(playerHealth == 5)
+	{
+		playerHealthBar.image.src = "HealthBar5.fw.png";
+	}
+	if(playerHealth == 4)
+	{
+		playerHealthBar.image.src = "HealthBar4.fw.png";
+	}
+	if(playerHealth == 3)
+	{
+		playerHealthBar.image.src = "HealthBar3.fw.png";
+	}
+	if(playerHealth == 2)
+	{
+		playerHealthBar.image.src = "HealthBar2.fw.png";
+	}
+	if(playerHealth == 1)
+	{
+		playerHealthBar.image.src = "HealthBar1.fw.png";
+	}
+
+	context.save();
+		context.translate(playerHealthBar.x, playerHealthBar.y);
+		context.drawImage(playerHealthBar.image, -playerHealthBar.width, -playerHealthBar.height);
+	context.restore();
 }
 
 initialize();
