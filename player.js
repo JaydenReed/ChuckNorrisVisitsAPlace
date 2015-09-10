@@ -38,6 +38,8 @@ var Player = function() {
 	this.falling = true;
 	this.jumping = false
 	this.direction = RIGHT;
+	
+	this.cooldownTimer = 0;
 };
 Player.prototype.update = function(deltaTime)
 {
@@ -82,6 +84,19 @@ Player.prototype.update = function(deltaTime)
 	{
 		jump = true;
 	}
+	
+	if(this.cooldownTimer>0)
+	{
+		this.cooldownTimer -= deltaTime;
+	}
+	if(keyboard.isKeyDown(keyboard.KEY_SHIFT) == true && this.cooldownTimer <= 0)
+	{
+		sfxFire.play();
+		this.cooldownTimer = 0.3;
+		
+		// Shoot a bullet
+	}
+	
 	if(keyboard.isKeyDown(keyboard.KEY_A) == true && playerHealth > 0)
 	{
 		playerHealth -= 1;
@@ -173,5 +188,5 @@ Player.prototype.update = function(deltaTime)
 }
 Player.prototype.draw = function()
 {
-	this.sprite.draw(context, this.position.x, this.position.y);
+	this.sprite.draw(context, this.position.x - worldOffsetX, this.position.y);
 }
