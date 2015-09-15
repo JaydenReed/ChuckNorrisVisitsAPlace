@@ -1,31 +1,72 @@
-var Enemy = function() {
-	this.image = document.createElement("img");
-	this.x = canvas.width/2 + 100;
-	this.y = canvas.height/2;
-	this.width = 34;
-	this.height = 43;
+var Enemy = function(x, y)
+{
+	this.sprite = new Sprite("EnemyStand.png");
+	this.sprite.buildAnimation(1, 1, 34, 43, 1, [0]);
+	//this.sprite.setAnimationOffset(0, -35, -40);
 	
-	this.image.src = "EnemyStand.png";
+	this.position = new Vector2();
+	this.position.set(x, y);
+	
+	this.velocity = new Vector2();
+	this.velocity.set(0,0);
+	
+	this.moveRight = true;
+	this.pause = 0;
 };
 Enemy.prototype.update = function(deltaTime)
 {
-	if( typeof(this.rotation) == "undefined" )
-		this.rotation = 0;
+	this.sprite.update(deltaTime);
 	
-	if(keyboard.isKeyDown(keyboard.KEY_SPACE) == true)
+	if(this.pause > 0)
 	{
-		this.rotation -= deltaTime;
+		this.pause -= deltaTime;
 	}
 	else
 	{
-		this.rotation += deltaTime;
+		var ddx = 0;
+		
+		var tx = pixelToTile(this.position.x);
+		var ty = pixelToTile(this.position.y);
+		var nx = (this.position.x)%TILE;
+		var ny = (this.position.y)%TILE;
+		var cell = cellAtTileCoord(LAYER_PLATFORMS, tx, ty);
+		var cellright = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty);
+		var celldown = cellAtTileCoord(LAYER_PLATFORMS, tx, ty + 1);
+		var celldiag = cellAtTileCoord(LAYER_PLATFORMS, tx + 1, ty + 1);
+		
+		if(this.moveRight)
+		{
+			if(celldiag && !cellright)
+			{
+				ddx = ddx + ENEMY_ACCEL;
+			}
+			else
+			{
+				this.velocity.x = 0;
+				this.moveRight = false;
+				this.pause = 0.5;
+			}
+		}
+		
+		if(!this.moveRight)
+		{
+			if(celldown && !cell)
+			{
+				ddx = ddx - ENEMY_ACCEL;
+			}
+			else
+			{
+				this.velocity.x = 0;
+				this.moveRight = true;
+				this.pause = 0.5;
+			}
+		}
+		
+		this.position.x = Math.floor(this.position.x + (deltaTime * this.velocity.x));
+		this.velocity.x = bound(this.velocity.x + (deltaTime * ddx), -ENEMY_MAXDX, ENEMY_MAXDX);
 	}
 }
 Enemy.prototype.draw = function()
 {
-	context.save();
-		context.translate(this.x, this.y);
-		context.rotate(this.rotation);
-		context.drawImage(this.image, -this.width/2, -this.height/2);
-	context.restore();
+	this.sprite.draw(context, this.position.x - worldOffsetX, this.position.y);
 }

@@ -50,6 +50,10 @@ var MAXDY = METER * 15;
 var ACCEL = MAXDX * 2;
 var FRICTION = MAXDX * 6;
 var JUMP = METER * 1500;
+var ENEMY_MAXDX = METER * 5;
+var ENEMY_ACCEL = ENEMY_MAXDX * 2;
+var LAYER_OBJECT_ENEMIES = 3;
+var LAYER_OBJECT_TRIGGERS = 4;
 
 // some variables to calculate the Frames Per Second (FPS - this tells use
 // how fast our game is running, and allows us to make the game run at a 
@@ -62,6 +66,7 @@ var fpsTime = 0;
 var chuckNorris = document.createElement("img");
 chuckNorris.src = "hero.png";
 
+var enemies = [];
 var player = new Player();
 var keyboard = new Keyboard();
 var bullet = new Bullet();
@@ -185,16 +190,40 @@ function initialize() {
 		}
 	}
 	
+	idx = 0;
+	for(var y = 0; y < level1.layers[LAYER_OBJECT_ENEMIES].height; y++)
+	{
+		for(var x = 0; x < level1.layers[LAYER_OBJECT_ENEMIES].width; x++)
+		{
+			if(level1.layers[LAYER_OBJECT_ENEMIES].data[idx] != 0)
+			{
+				var px = tileToPixel(x);
+				var py = tileToPixel(y);
+				var e = new Enemy(px, py);
+				enemies.push(e);
+			}
+			idx++;
+		}
+	}
+	
 	musicBackground = new Howl(
+	{
+		urls: ["background.ogg"],
+		loop: true,
+		buffer: true,
+		volume: 0.5
+	} );
+	musicBackground.play();
+	
+	sfxFire = new Howl(
 	{
 		urls: ["fireEffect.ogg"],
 		buffer: true,
 		volume: 1,
-		onend: function()
-		{
+		onend: function() {
 			isSfxPlaying = false;
 		}
-	} );
+	});
 }
 
 function run()
@@ -203,10 +232,17 @@ function run()
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	
 	var deltaTime = getDeltaTime();
-	
+	for(var i=0; i<enemies.length; i++)
+	{
+		enemies[i].update(deltaTime)
+	}
 	player.update(deltaTime);
 	
 	drawMap();
+	for(var i=0; i<enemies.length; i++)
+	{
+		enemies[i].draw(deltaTime);
+	}
 	player.draw();
 	
 	// playerHealthBar.update(deltaTime);
