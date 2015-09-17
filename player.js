@@ -94,7 +94,18 @@ Player.prototype.update = function(deltaTime)
 		sfxFire.play();
 		this.cooldownTimer = 0.3;
 		
-		// Shoot a bullet
+		if(right == true)
+		{
+			moveRight = true;
+		}
+		else
+		{
+			moveRight = false;
+		}
+		
+		var bullet = new Bullet(this.position.x, this.position.y, moveRight);
+		bullets.push(bullet);
+		console.log("Shot");
 	}
 	
 	if(keyboard.isKeyDown(keyboard.KEY_A) == true && playerHealth > 0)
@@ -173,7 +184,7 @@ Player.prototype.update = function(deltaTime)
 	{
 		if((cellright && !cell) || (celldiag && !celldown && ny))
 		{
-			this.position.x = tileToPixel(tx + 1);
+			this.position.x = tileToPixel(tx);
 			this.velocity.x = 0;
 		}
 	}
@@ -184,6 +195,10 @@ Player.prototype.update = function(deltaTime)
 			this.position.x = tileToPixel(tx + 1);
 			this.velocity.x = 0;
 		}
+	}
+	if(cellAtTileCoord(LAYER_OBJECT_TRIGGERS, tx, ty) == true)
+	{
+		console.log("Game over dude...")
 	}
 }
 Player.prototype.draw = function()

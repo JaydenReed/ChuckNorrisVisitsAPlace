@@ -1,9 +1,18 @@
+var direction = 1; //Left = 0 and Right = 1
+
+var ANIM_LEFT = 0;
+var ANIM_RIGHT = 1;
+var ANIM_MAXANIM = 2;
+
 var Enemy = function(x, y)
 {
 	this.sprite = new Sprite("EnemyStand.png");
-	this.sprite.buildAnimation(1, 1, 34, 43, 1, [0]);
-	//this.sprite.setAnimationOffset(0, -35, -40);
-	
+	this.sprite.buildAnimation(4, 1, 34, 43, 0.5, [0, 1]); //ANIM_LEFT
+	this.sprite.buildAnimation(4, 1, 34, 43, 0.5, [2, 3]); //ANIM_RIGHT
+	for(var i=0; i<ANIM_MAXANIM; i++)
+	{
+		this.sprite.setAnimationOffset(i, 0, -6);
+	}  
 	this.position = new Vector2();
 	this.position.set(x, y);
 	
@@ -39,6 +48,9 @@ Enemy.prototype.update = function(deltaTime)
 			if(celldiag && !cellright)
 			{
 				ddx = ddx + ENEMY_ACCEL;
+				this.direction = 1;
+				if(this.sprite.currentAnimation != ANIM_RIGHT)
+					this.sprite.setAnimation(ANIM_RIGHT);
 			}
 			else
 			{
@@ -53,6 +65,9 @@ Enemy.prototype.update = function(deltaTime)
 			if(celldown && !cell)
 			{
 				ddx = ddx - ENEMY_ACCEL;
+				this.direction = 0;
+				if(this.sprite.currentAnimation != ANIM_LEFT)
+					this.sprite.setAnimation(ANIM_LEFT);
 			}
 			else
 			{

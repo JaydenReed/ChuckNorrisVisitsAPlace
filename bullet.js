@@ -1,57 +1,33 @@
-var Bullets = [];
-var BULLET_SPEED = 3;
+var moveRight = false
 
-var Bullet = function() {
-	this.image = document.createElement("img");
-	this.x = Player.x;
-	this.y = Player.y;
-	this.width = 5;
-	this.height = 5;
-	
-	this.image.src = "bullet.png";
-}
-
-Bullet.prototype.playerShoot = function()
-{	
-	//Start with the Bullets velocity straight up
-	var velX = 0;
-	var velY = 1;
-	
-	//Rotates the vector to the ships current rotation
-	var s = Math.sin(player.rotation);
-	var c = Math.cos(player.rotation);
-	
-	var xVel = (velX * c) - (velY * s);
-	var yVel = (velX * s) + (velY * c);
-	
-	this.velocityX = xVel * BULLET_SPEED;
-	this.velocityY = yVel * BULLET_SPEED;
-	
-	Bullets.push(this);
-}
-
-Bullet.prototype.update = function()
+var Bullet = function(x, y, moveRight)
 {
-		// Update all the Bullets
-	for(var i=0; i<Bullets.length; i++)
-	{
-		Bullets[i].x += Bullets[i].velocityX;
-		Bullets[i].y += Bullets[i].velocityY;
-	}
+	this.sprite = new Sprite("bullet.png");
+	this.sprite.buildAnimation(1, 1, 5, 5, -1, [0]);
+	this.sprite.setAnimationOffset(0, 0, 0);
+	this.sprite.setLoop(0, false);
 	
-	for(var i=0; i<Bullets.length; i++)
-	{
-		// Check if the bullet has gone out of the screen boundaries
-		if(Bullets[i].x < -Bullets[i].width || Bullets[i].x > SCREEN_WIDTH || Bullets[i].y < -Bullets[i].height || Bullets[i].y > SCREEN_HEIGHT)
-		{
-			Bullets.splice(i, 1);
-			break;
-		}
-	}
+	this.position = new Vector2();
+	this.position.set(x, y);
 	
-	// draw all the Bullets
-	for(var i=0; i<Bullets.length; i++)
-	{
-		context.drawImage(Bullets[i].image, Bullets[i].x - Bullets[i].width/2, Bullets[i].y - Bullets[i].height/2);
-	}
+	this.velocity = new Vector2();
+	this.velocity.set(0, 0);
+	
+	this.moveRight = moveRight;
+	if(this.moveRight == true)
+		this.velocity.set(MAXDX * 2, 0);
+	else
+		this.velocity.set(-MAXDX * 2, 0);
+}
+
+Bullet.prototype.update = function(deltaTime)
+{
+	this.sprite.update(deltaTime);
+	this.position.x = Math.floor(this.position.x + (deltaTime * this.velocity.x));
+}
+
+Bullet.prototype.draw = function()
+{
+	var screenX = this.position.x - worldOffsetX;
+	this.sprite.draw(context, screenX, this.position.y);
 }

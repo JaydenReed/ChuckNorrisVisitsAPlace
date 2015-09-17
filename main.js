@@ -66,6 +66,8 @@ var fpsTime = 0;
 var chuckNorris = document.createElement("img");
 chuckNorris.src = "hero.png";
 
+var score = 0;
+var bullets = [];
 var enemies = [];
 var player = new Player();
 var keyboard = new Keyboard();
@@ -190,6 +192,28 @@ function initialize() {
 		}
 	}
 	
+	cells[LAYER_OBJECT_TRIGGERS] = [];
+	idx = 0;
+	for(var y = 0; y < level1.layers[LAYER_OBJECT_TRIGGERS].height; y++)
+	{
+		cells[LAYER_OBJECT_TRIGGERS][y] = [];
+		for(var x = 0; x < level1.layers[LAYER_OBJECT_TRIGGERS].width; x++)
+		{
+			if(level1.layers[LAYER_OBJECT_TRIGGERS].data[idx] != 0)
+			{
+				cells[LAYER_OBJECT_TRIGGERS][y][x] = 1;
+				cells[LAYER_OBJECT_TRIGGERS][y-1][x] = 1;
+				cells[LAYER_OBJECT_TRIGGERS][y-1][x+1] = 1;
+				cells[LAYER_OBJECT_TRIGGERS][y][x+1] + 1;
+			}
+			else if(cells[LAYER_OBJECT_TRIGGERS][y][x] != 1)
+			{
+				cells[LAYER_OBJECT_TRIGGERS][y][x] = 0;
+			}
+			idx++;
+		}
+	}
+	
 	idx = 0;
 	for(var y = 0; y < level1.layers[LAYER_OBJECT_ENEMIES].height; y++)
 	{
@@ -213,7 +237,7 @@ function initialize() {
 		buffer: true,
 		volume: 0.5
 	} );
-	musicBackground.play();
+	//musicBackground.play();
 	
 	sfxFire = new Howl(
 	{
@@ -226,8 +250,42 @@ function initialize() {
 	});
 }
 
+function intersects(x1, y1, w1, h1, x2, y2, w2, h2)
+{
+	if(y2 + h2 < y1 || x2 + w2 < x1 || x2 > x1 + w1 || y2 > y1 + h1)
+	{
+		return false;
+	}
+	return true;
+}
+
 function run()
 {
+	var hit = false;
+	for(var i=0; i<bullets.length; i++)
+	{
+		bullets[i].update(deltaTime);
+		if(bullets[i].position.x - worldOffsetX < 0 || bullets[i].position.x - worldOffsetX > SCREEN_WIDTH)
+		{
+			hit = true;
+		}
+		
+		for(var j=0; j<enemies.length; j++)
+		{
+			if(intersects( bullets[i].position.x, bullets[i].position.y, TILE, TILE, enemies[j].position.x, enemies[j].position.y, TILE, TILE) == true)
+			{
+				enemies.splice(j, 1);
+				hit = true;
+				score += 1;
+				break;
+			}
+		}
+		if(hit == true)
+		{
+			bullets.splice(i, 1);
+			break;
+		}
+	}
 	context.fillStyle = "#ccc";		
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	
@@ -236,12 +294,20 @@ function run()
 	{
 		enemies[i].update(deltaTime)
 	}
+	for(var i=0; i<bullets.length; i++)
+	{
+		bullets[i].update(deltaTime)
+	}
 	player.update(deltaTime);
 	
 	drawMap();
 	for(var i=0; i<enemies.length; i++)
 	{
 		enemies[i].draw(deltaTime);
+	}
+	for(var i=0; i<bullets.length; i++)
+	{
+		bullets[i].draw(deltaTime);
 	}
 	player.draw();
 	
@@ -262,11 +328,6 @@ function run()
 	context.fillStyle = "#f00";
 	context.font="14px Arial";
 	context.fillText("FPS: " + fps, 5, 20, 100);
-	
-	if(keyboard.isKeyDown(keyboard.KEY_SHIFT) == true)
-	{
-		bullet.playerShoot();
-	}
 	
 	bullet.update();
 	
