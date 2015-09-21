@@ -76,6 +76,8 @@ var bullet = new Bullet();
 
 // var playerHealthTimer = 2;
 var playerHealth = 8;
+var playerAlive = 1; //1 = alive, 0 = dead
+var createTombstone = 1;
 
 // Load the image to use for the level tiles
 var tileset = document.createElement("img");
@@ -289,6 +291,15 @@ function run()
 	context.fillStyle = "#ccc";		
 	context.fillRect(0, 0, canvas.width, canvas.height);
 	
+	var PlayerTombstone = {
+		image: document.createElement("img"),
+		x: player.position.x,
+		y: player.position.y,
+		width: 18,
+		height: 25,
+	};
+	PlayerTombstone.image.src = "Tombstone.png";
+	
 	var deltaTime = getDeltaTime();
 	for(var i=0; i<enemies.length; i++)
 	{
@@ -309,7 +320,18 @@ function run()
 	{
 		bullets[i].draw(deltaTime);
 	}
-	player.draw();
+	
+	if (playerAlive == 1)
+	{
+		player.draw();
+	}
+	else if (createTombstone == 1)
+	{
+		context.save();
+			context.translate(PlayerTombstone.x - worldOffsetX, PlayerTombstone.y);
+			context.drawImage(PlayerTombstone.image, -PlayerTombstone.width, -PlayerTombstone.height);
+		context.restore();
+	}
 	
 	// playerHealthBar.update(deltaTime);
 	// playerHealthBar.draw();
@@ -370,6 +392,11 @@ function run()
 	if(playerHealth == 1)
 	{
 		playerHealthBar.image.src = "HealthBar1.fw.png";
+	}
+	if(playerHealth == 0)
+	{
+		playerHealthBar.image.src = "HealthBar0.fw.png";
+		playerAlive = 0;
 	}
 
 	context.save();

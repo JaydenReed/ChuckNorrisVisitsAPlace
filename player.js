@@ -50,14 +50,14 @@ Player.prototype.update = function(deltaTime)
 	var jump = false;
 	
 	// check keypress events
-	if(keyboard.isKeyDown(keyboard.KEY_LEFT) == true)
+	if(keyboard.isKeyDown(keyboard.KEY_LEFT) == true && playerAlive == 1)
 	{
 		left = true;
 		this.direction = LEFT;
 		if(this.sprite.currentAnimation != ANIM_WALK_LEFT && this.jumping == false)
 			this.sprite.setAnimation(ANIM_WALK_LEFT);
 	}
-	else if(keyboard.isKeyDown(keyboard.KEY_RIGHT) == true)
+	else if(keyboard.isKeyDown(keyboard.KEY_RIGHT) == true && playerAlive == 1)
 	{
 		right = true;
 		this.direction = RIGHT;
@@ -80,7 +80,7 @@ Player.prototype.update = function(deltaTime)
 			}
 		}
 	}
-	if(keyboard.isKeyDown(keyboard.KEY_SPACE) == true)
+	if(keyboard.isKeyDown(keyboard.KEY_SPACE) == true && playerAlive == 1)
 	{
 		jump = true;
 	}
@@ -89,7 +89,7 @@ Player.prototype.update = function(deltaTime)
 	{
 		this.cooldownTimer -= deltaTime;
 	}
-	if(keyboard.isKeyDown(keyboard.KEY_SHIFT) == true && this.cooldownTimer <= 0)
+	if(keyboard.isKeyDown(keyboard.KEY_SHIFT) == true && this.cooldownTimer <= 0 && playerAlive == 1)
 	{
 		sfxFire.play();
 		this.cooldownTimer = 0.3;
