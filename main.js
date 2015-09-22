@@ -54,6 +54,12 @@ var ENEMY_MAXDX = METER * 5;
 var ENEMY_ACCEL = ENEMY_MAXDX * 2;
 var LAYER_OBJECT_ENEMIES = 3;
 var LAYER_OBJECT_TRIGGERS = 4;
+var STATE_SPLASH = 0;
+var STATE_GAME = 1;
+var STATE_GAMEOVER = 2;
+var STATE_SETTINGS = 3;
+
+var gameState = STATE_SPLASH;
 
 // some variables to calculate the Frames Per Second (FPS - this tells use
 // how fast our game is running, and allows us to make the game run at a 
@@ -66,6 +72,8 @@ var fpsTime = 0;
 var chuckNorris = document.createElement("img");
 chuckNorris.src = "hero.png";
 
+var KeyTimer = 20;
+var MenuSelection = 0;
 var score = 0;
 var bullets = [];
 var enemies = [];
@@ -263,6 +271,103 @@ function intersects(x1, y1, w1, h1, x2, y2, w2, h2)
 
 function run()
 {
+	context.fillStyle = "#FFFFFF";
+	context.fillRect(0, 0, canvas.width, canvas.height);
+	
+	var deltaTime = getDeltaTime();
+	
+	switch(gameState)
+	{
+		case STATE_SPLASH:
+			runSplash(deltaTime);
+			break;
+		case STATE_GAME:
+			runGame(deltaTime);
+			break;
+		case STATE_GAMEOVER:
+			runGameOver(deltaTime);
+			break;
+		case STATE_SETTINGS:
+			runSettings(deltaTime);
+			break;
+	}
+}
+
+function runSplash(deltaTime)
+{
+	context.fillStyle = "#000";
+	context.font = "30px Arial Bold";
+	context.fillText("Chuck Norris Visits a Place", 155, 140);
+	
+	if(MenuSelection == 0)
+	{
+		context.fillStyle = "#000";
+		context.font = "24px Arial";
+		context.fillText("[START GAME]", 232, 208);
+	}
+	else
+	{
+		context.fillStyle = "#000";
+		context.font = "24px Arial";
+		context.fillText("START GAME", 239, 208);
+	}
+	
+	if(MenuSelection == 1)
+	{
+		context.fillStyle = "#000";
+		context.font = "24px Arial";
+		context.fillText("[SETTINGS]", 248, 235);
+	}
+	else
+	{
+		context.fillStyle = "#000";
+		context.font = "24px Arial";
+		context.fillText("SETTINGS", 255, 235);
+	}
+	
+	if(KeyTimer > 0)
+	{
+		KeyTimer -= 1;
+	}
+	
+	if(keyboard.isKeyDown(keyboard.KEY_DOWN) == true && KeyTimer <= 0)
+	{
+		KeyTimer = 15;
+		if(MenuSelection == 0)
+		{
+			MenuSelection = 1;
+		}
+		else
+		{
+			MenuSelection = 0;
+		}
+	}
+	
+	if(keyboard.isKeyDown(keyboard.KEY_UP) == true && KeyTimer <= 0)
+	{
+		KeyTimer = 15;
+		if(MenuSelection == 0)
+		{
+			MenuSelection = 1;
+		}
+		else
+		{
+			MenuSelection = 0;
+		}
+	}
+
+	if(keyboard.isKeyDown(keyboard.KEY_ENTER) == true)
+	{
+		if(MenuSelection == 0)
+		{
+			gameState = STATE_GAME;
+		}
+	}
+}
+
+function runGame(deltaTime)
+{
+	console.log(deltaTime);
 	var hit = false;
 	for(var i=0; i<bullets.length; i++)
 	{
@@ -288,8 +393,8 @@ function run()
 			break;
 		}
 	}
-	context.fillStyle = "#ccc";		
-	context.fillRect(0, 0, canvas.width, canvas.height);
+	//context.fillStyle = "#ccc";		
+	//context.fillRect(0, 0, canvas.width, canvas.height);
 	
 	var PlayerTombstone = {
 		image: document.createElement("img"),
@@ -300,7 +405,7 @@ function run()
 	};
 	PlayerTombstone.image.src = "Tombstone.png";
 	
-	var deltaTime = getDeltaTime();
+	//var deltaTime = getDeltaTime();
 	for(var i=0; i<enemies.length; i++)
 	{
 		enemies[i].update(deltaTime)
