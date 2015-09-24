@@ -94,7 +94,7 @@ Player.prototype.update = function(deltaTime)
 		sfxFire.play();
 		this.cooldownTimer = 0.3;
 		
-		if(right == true)
+		if(player.direction == RIGHT)
 		{
 			moveRight = true;
 		}
@@ -103,7 +103,7 @@ Player.prototype.update = function(deltaTime)
 			moveRight = false;
 		}
 		
-		var bullet = new Bullet(this.position.x, this.position.y, moveRight);
+		var bullet = new Bullet(this.position.x + 20, this.position.y, moveRight);
 		bullets.push(bullet);
 		console.log("Shot");
 	}

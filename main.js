@@ -80,6 +80,9 @@ var enemies = [];
 var player = new Player();
 var keyboard = new Keyboard();
 var bullet = new Bullet();
+var settingsMenuSelection = 0;
+var GodMode = false;
+var GodModeSelection = 0;
 // var playerHealthBar = new PlayerHealth();
 
 // var playerHealthTimer = 2;
@@ -242,12 +245,12 @@ function initialize() {
 	
 	musicBackground = new Howl(
 	{
-		urls: ["background.ogg"],
+		urls: ["RevivingHollowBastion.ogg"],
 		loop: true,
 		buffer: true,
 		volume: 0.5
 	} );
-	//musicBackground.play();
+	musicBackground.play();
 	
 	sfxFire = new Howl(
 	{
@@ -356,18 +359,22 @@ function runSplash(deltaTime)
 		}
 	}
 
-	if(keyboard.isKeyDown(keyboard.KEY_ENTER) == true)
+	if(keyboard.isKeyDown(keyboard.KEY_ENTER) == true && KeyTimer <= 0)
 	{
+		KeyTimer = 15;
 		if(MenuSelection == 0)
 		{
 			gameState = STATE_GAME;
+		}
+		else
+		{
+			gameState = STATE_SETTINGS;
 		}
 	}
 }
 
 function runGame(deltaTime)
 {
-	console.log(deltaTime);
 	var hit = false;
 	for(var i=0; i<bullets.length; i++)
 	{
@@ -390,6 +397,15 @@ function runGame(deltaTime)
 		if(hit == true)
 		{
 			bullets.splice(i, 1);
+			break;
+		}
+	}
+	for(var j=0; j<enemies.length; j++)
+	{
+		if(intersects( player.position.x, player.position.y, TILE, TILE, enemies[j].position.x, enemies[j].position.y, TILE, TILE) == true && GodMode == false)
+		{
+			enemies.splice(j, 1);
+			playerHealth -= 1;
 			break;
 		}
 	}
@@ -416,6 +432,18 @@ function runGame(deltaTime)
 	}
 	player.update(deltaTime);
 	
+	var WorldBackground = {
+		image: document.createElement("img"),
+		x: 0,
+		y: 0,
+		width: 1190,
+		height: 672,
+	};
+	WorldBackground.image.src = "HollowBastion.png";
+	context.save();
+		context.drawImage(WorldBackground.image, WorldBackground.x - (worldOffsetX/2.8), WorldBackground.y, WorldBackground.width, WorldBackground.height);
+	context.restore();
+	
 	drawMap();
 	for(var i=0; i<enemies.length; i++)
 	{
@@ -437,7 +465,10 @@ function runGame(deltaTime)
 			context.drawImage(PlayerTombstone.image, -PlayerTombstone.width, -PlayerTombstone.height);
 		context.restore();
 	}
-	
+	if(playerAlive == 0)
+	{
+		
+	}
 	// playerHealthBar.update(deltaTime);
 	// playerHealthBar.draw();
 	
@@ -508,6 +539,177 @@ function runGame(deltaTime)
 		context.translate(playerHealthBar.x, playerHealthBar.y);
 		context.drawImage(playerHealthBar.image, -playerHealthBar.width, -playerHealthBar.height);
 	context.restore();
+}
+
+function runSettings(deltaTime)
+{
+	context.fillStyle = "#000";
+	context.font = "24px Arial Bold";
+	context.fillText("SETTINGS", 250, 180);
+	
+	context.fillStyle = "#000";
+	context.font = "24px Arial Bold";
+	context.fillText("GODMODE:", 190, 208);
+	
+	if(KeyTimer > 0)
+	{
+		KeyTimer -= 1;
+	}
+	
+	if(settingsMenuSelection == 0)
+	{
+		if(GodModeSelection == 0)
+		{
+			if(GodMode == true)
+			{
+				context.fillStyle = "#000";
+				context.font = "24px Arial";
+				context.fillText("[ON]", 321, 208);
+				context.fillStyle = "#000";
+				context.font = "24px Arial Bold";
+				context.fillText("OFF", 376, 208);
+			}
+			else
+			{
+				context.fillStyle = "#000";
+				context.font = "24px Arial Bold";
+				context.fillText("[ON]", 321, 208);
+				context.fillStyle = "#000";
+				context.font = "24px Arial";
+				context.fillText("OFF", 376, 208);
+			}
+		}
+		if(GodModeSelection == 1)
+		{
+			if(GodMode == true)
+			{
+				context.fillStyle = "#000";
+				context.font = "24px Arial";
+				context.fillText("ON", 328, 208);
+				context.fillStyle = "#000";
+				context.font = "24px Arial Bold";
+				context.fillText("[OFF]", 368, 208);
+			}
+			else
+			{
+				context.fillStyle = "#000";
+				context.font = "24px Arial Bold";
+				context.fillText("ON", 328, 208);
+				context.fillStyle = "#000";
+				context.font = "24px Arial";
+				context.fillText("[OFF]", 368, 208);
+			}
+		}
+	}
+	if(settingsMenuSelection == 1)
+	{
+		context.fillStyle = "#000";
+		context.font = "24px Arial Bold";
+		context.fillText("[BACK]", 262, 235);
+		
+		if(GodMode == true)
+		{
+			context.fillStyle = "#000";
+			context.font = "24px Arial";
+			context.fillText("ON", 328, 208);
+			context.fillStyle = "#000";
+			context.font = "24px Arial Bold";
+			context.fillText("OFF", 376, 208);
+		}
+		else
+		{
+			context.fillStyle = "#000";
+			context.font = "24px Arial Bold";
+			context.fillText("ON", 328, 208);
+			context.fillStyle = "#000";
+			context.font = "24px Arial";
+			context.fillText("OFF", 376, 208);
+		}
+	}
+	else
+	{
+		context.fillStyle = "#000";
+		context.font = "24px Arial Bold";
+		context.fillText("BACK", 270, 235);
+	}
+	
+	if(keyboard.isKeyDown(keyboard.KEY_UP) == true && KeyTimer <= 0)
+	{
+		KeyTimer = 15;
+		if(settingsMenuSelection == 0)
+		{
+			settingsMenuSelection = 1;
+		}
+		else
+		{
+			settingsMenuSelection = 0;
+		}
+	}
+	
+	if(keyboard.isKeyDown(keyboard.KEY_ENTER) == true && KeyTimer <= 0)
+	{
+		KeyTimer = 15;
+		if(settingsMenuSelection == 0)
+		{
+			if(GodMode == false)
+			{
+				GodMode = true;
+			}
+			else
+			{
+				GodMode = false;
+			}
+		}
+		else
+		{
+			gameState = STATE_SPLASH;
+		}
+	}
+	
+	if(keyboard.isKeyDown(keyboard.KEY_DOWN) == true && KeyTimer <= 0)
+	{
+		KeyTimer = 15;
+		if(settingsMenuSelection == 0)
+		{
+			settingsMenuSelection = 1;
+		}
+		else
+		{
+			settingsMenuSelection = 0;
+		}
+	}
+	
+	if(keyboard.isKeyDown(keyboard.KEY_LEFT) == true && KeyTimer <= 0)
+	{
+		KeyTimer = 15;
+		if(settingsMenuSelection == 0)
+		{
+			if(GodModeSelection == 0)
+			{
+				GodModeSelection = 1;
+			}
+			else
+			{
+				GodModeSelection = 0;
+			}
+		}
+	}
+	
+	if(keyboard.isKeyDown(keyboard.KEY_RIGHT) == true && KeyTimer <= 0)
+	{
+		KeyTimer = 15;
+		if(settingsMenuSelection == 0)
+		{
+			if(GodModeSelection == 0)
+			{
+				GodModeSelection = 1;
+			}
+			else
+			{
+				GodModeSelection = 0;
+			}
+		}
+	}
 }
 
 initialize();
